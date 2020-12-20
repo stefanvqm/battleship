@@ -10,7 +10,7 @@ const char buchstaben[] = {'a','b','c','d','e','f','g','h','i','j'};
 char boatfield1[10][10];    // [y][x]  field for player 1
 char boatfield2[10][10];    // [y][x]  field for player 2
 
-// testing branch
+
 
 void deleteall() { 
     // deletes the terminal for changing user. //  # präprozessor anweisungen     
