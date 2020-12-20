@@ -11,6 +11,7 @@ char boatfield1[10][10];    // [y][x]  field for player 1
 char boatfield2[10][10];    // [y][x]  field for player 2
 
 // 1. incompatible inputs
+// margareta wünscht mir viel spaß
 
 void deleteall() { 
     // deletes the terminal for changing user. //  # präprozessor anweisungen     
