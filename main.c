@@ -1,3 +1,4 @@
+/* (author: Stefan Götz) */
 
 #include <stdio.h>
 #include <string.h>
