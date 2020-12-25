@@ -22,7 +22,7 @@ void deleteall() {
 }
 
 void clean_stdin(void)
-{   // credits: Miron, thanks for helping!
+{   // credits: "Miron", thanks for helping!
     char c;
     do
     {
@@ -40,21 +40,25 @@ void previewfield() {
     for(int i=0; i<10; i++) {
         printf("%c  ", buchstaben[i]);
         for(int j=0; j<10; j++) {
-            printf("□ ");
+            printf("- ");
         }
         printf("\n");
     }
 }
 
 void welcomeMessages() {
-    printf("\n\n");
+    printf("\n");
+    printf("\nPress ENTER key to start.");
+    clean_stdin();
+    deleteall();
     printf("Welcome to Battleship!\n");
     printf("\nRules:\n");
     printf("1. the boats have to be placed vertical or horizontal.\n");
     printf("2. the boats are not allowed to touch each other.\n");
     printf("\nKeep in mind that you, as the player have to look if the boats are placed legally.\n");
     printf("\nYou have 10 boats:\n1x with the length of 4\n2x with the length of 3\n3x with the length of 2\n4x with the length of 1\n");
-    printf("\nWhen placing a boat, at first give the y coordinate, then the x coordinate.");
+    printf("\nWhen placing a boat, at first give the y coordinate, then the x coordinate.\n");
+    printf("\nLegende: \n\n   -  unknown field\n   O  boat\n   x  destroyed part of boat\n   X  part of fully destroyed boat\n   w  water");
     printf("\n\n");
     printf("The battlefield looks like that:\n\n");
     previewfield();
@@ -259,9 +263,14 @@ void boatplacingplayer2() {
     deleteall();
 }
 
+void shooting() {
+    int counterp1 = 0;
+    int counterp2 = 0;
+}
 
 int main() {
     welcomeMessages();
     boatplacingplayer1();
     boatplacingplayer2();
+
 }
