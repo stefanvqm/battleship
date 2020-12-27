@@ -68,30 +68,16 @@ void welcomeMessages() {
     deleteall();
 }
 
-// prints field of player 1
-void fieldp1() {
-    printf("\n\n   ");     
-    for(int i=0; i<10; i++) {
-        printf("%d ", i+1);
-    }
-    printf("\n");
+char boatplacing(char *array, int a) {  
+    // format: player array , player number
 
-    for(int i=0; i<10; i++) {
-        printf("%c  ", buchstaben[i]);
-        for(int j=0; j<10; j++) {
-            printf("%c ", boatfield1[i][j]);
-        }
-        printf("\n");
+
+    // allocates - to the field, otherwise error
+    for(int i=0; i<100; i++) {
+        *(array+i) = '-';
     }
-    printf("\n");
-}
-void boatplacingplayer1() {
-    // creates field without printing, otherwise error
-    for(int i=0; i<10; i++) {
-        for(int j=0; j<10; j++) {
-            boatfield1[i][j] = '-';
-        }
-    }
+
+    printf("Player %d:\n\n", a);
 
     for(int p=0; p<10; p++) { //  p = 10 boats...
         int x = 0;
@@ -136,128 +122,88 @@ void boatplacingplayer1() {
 
         if(direction+48 == '1') {           // left
             for(int h=0; h<temp; h++) {
-                boatfield1[y][x-h] = 'O'; 
+                *(array+((y*10+x)-h)) = 'O'; 
             }
-            fieldp1();
-        }
-        if(direction+48 == '2') {           // right
-            for(int b=0; b<temp; b++) {
-                boatfield1[y][x+b] = 'O'; 
+
+            printf("\n\n   ");     
+            for(int i=0; i<10; i++) {
+                printf("%d ", i+1);
             }
-            fieldp1();
-        }
-        if(direction+48 == '3') {           // up
-            for(int q=0; q<temp; q++) {
-                boatfield1[y-q][x] = 'O'; 
-            }
-            fieldp1();
-        }
-        if(direction+48 == '4') {           // down
-            for(int t=0; t<temp; t++) {
-                boatfield1[y+t][x] = 'O'; 
-            }
-            fieldp1();
-        }
-    }
-    printf("\nPlayer 1 placed every boat.\n");
-    printf("\nPress ENTER key to remove your field from the screen.");
-    clean_stdin();
-    deleteall();
-}
+            printf("\n");
+            for(int i=0; i<10; i++) {
+                printf("%c  ", buchstaben[i]);
 
-// prints field of player 2
-void fieldp2() {
-    printf("\n\n   ");     
-    for(int i=0; i<10; i++) {
-        printf("%d ", i+1);
-    }
-    printf("\n");
-
-    for(int i=0; i<10; i++) {
-        printf("%c  ", buchstaben[i]);
-        for(int j=0; j<10; j++) {
-            printf("%c ", boatfield2[i][j]);
-        }
-        printf("\n");
-    }
-    printf("\n");
-}
-void boatplacingplayer2() {
-    // creates field without printing, otherwise error
-    for(int i=0; i<10; i++) {
-        for(int j=0; j<10; j++) {
-            boatfield2[i][j] = '-';
-        }
-    }
-
-    for(int p=0; p<10; p++) { // p = 10 boats...
-        int x = 0;
-        int y = 0;
-        int i, k, j;
-        int direction;
-        printf("y coordinate for boat no.%d with length %d: ", p+1, boatlength[p]);   // what if incompatible input
-        scanf("%d", &y);
-        printf("x coordinate for boat no.%d with length %d: ", p+1, boatlength[p]);   // what if incompatible input
-        scanf("%d", &x);
-
-        y--;
-        x--;
-        
-        printf("\n\n   ");     
-        for(j=0; j<10; j++) {
-            printf("%d ", j+1);
-        }
-        printf("\n");
-        for(i=0; i<10; i++) {
-            printf("%c  ", buchstaben[i]);
-            for(k=0; k<10; k++) {
-                if( y == i && x == k) {
-                    printf("O ");  // doesnt work with ■ hex = \x25A0
+                for(int j=0; j<10; j++) {
+                    printf("%c ", *(array+((i*10)+j)));
                 }
-                else {
-                    if(((y == i) && ((k-x) < boatlength[p]) && ((x-k) < boatlength[p])) || ((x == k) && ((i-y) < boatlength[p]) && ((y-i) < boatlength[p])) ) {
-                        printf("x ");
-                    } 
-                    else {
-                        printf("- ");
-                    }
-                }
+                printf("\n");
             }
             printf("\n");
         }
-        
-
-        printf("\nThe x's show you where your boat could be placed, depending on the base coordinates,\nboat left (1), right (2), up (3), down (4),  from the starting-point you chose?: ");
-        scanf("%d", &direction);  // will be used later
-
-        int temp = boatlength[p];
-
-        if(direction+48 == '1') {           // left
-            for(int h=0; h<temp; h++) {
-                boatfield2[y][x-h] = 'O'; 
-            }
-            fieldp2();
-        }
         if(direction+48 == '2') {           // right
             for(int b=0; b<temp; b++) {
-                boatfield2[y][x+b] = 'O'; 
+                *(array+((y*10+x)+b)) = 'O'; 
             }
-            fieldp2();
+            
+            printf("\n\n   ");     
+            for(int i=0; i<10; i++) {
+                printf("%d ", i+1);
+            }
+            printf("\n");
+            for(int i=0; i<10; i++) {
+                printf("%c  ", buchstaben[i]);
+
+                for(int j=0; j<10; j++) {
+                    printf("%c ", *(array+((i*10)+j)));
+                }
+                printf("\n");
+            }
+            printf("\n");
         }
         if(direction+48 == '3') {           // up
             for(int q=0; q<temp; q++) {
-                boatfield2[y-q][x] = 'O'; 
+                *(array+((y-q)*10+x)) = 'O'; 
+                // array[y-q][x] = 'O'; 
             }
-            fieldp2();
+            
+            printf("\n\n   ");     
+            for(int i=0; i<10; i++) {
+                printf("%d ", i+1);
+            }
+            printf("\n");
+            for(int i=0; i<10; i++) {
+                printf("%c  ", buchstaben[i]);
+
+                for(int j=0; j<10; j++) {
+                    printf("%c ", *(array+((i*10)+j)));
+                }
+                printf("\n");
+            }
+            printf("\n");
         }
         if(direction+48 == '4') {           // down
             for(int t=0; t<temp; t++) {
-                boatfield2[y+t][x] = 'O'; 
+                *(array+((y+t)*10+x)) = 'O';
+                //array[y+t][x] = 'O'; 
             }
-            fieldp2();
+            
+            printf("\n\n   ");     
+            for(int i=0; i<10; i++) {
+                printf("%d ", i+1);
+            }
+            printf("\n");
+            for(int i=0; i<10; i++) {
+                printf("%c  ", buchstaben[i]);
+
+                for(int j=0; j<10; j++) {
+                    printf("%c ", *(array+((i*10)+j)));
+                }
+                printf("\n");
+            }
+            printf("\n");
         }
     }
-    printf("Player 2 placed every boat, press [Enter] to remove your field from the screen.");
+    printf("\nPlayer %d placed every boat.\n", a);
     printf("\nPress ENTER key to remove your field from the screen.");
     clean_stdin();
     deleteall();
@@ -270,7 +216,7 @@ void shooting() {
 
 int main() {
     welcomeMessages();
-    boatplacingplayer1();
-    boatplacingplayer2();
 
+    boatplacing(*boatfield1, 1); // format: player array , player number
+    boatplacing(*boatfield2, 2); // format: player array , player number
 }
