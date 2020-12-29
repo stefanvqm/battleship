@@ -7,8 +7,13 @@
 
 const int boatlength[] = {4, 3, 3, 2, 2, 2, 1, 1, 1, 1};
 const char buchstaben[] = {'a','b','c','d','e','f','g','h','i','j'};
-char boatfield1[10][10];    // [y][x]  field for player 1
-char boatfield2[10][10];    // [y][x]  field for player 2
+
+char boatfield1[10][10];    // [y][x]  field of player 1
+char boatfield2[10][10];    // [y][x]  field of player 2
+char shootingresult1[10][10];   //     result of p1's shootings
+char shootingresult2[10][10];   //     result of p2's shootings
+
+int whoseturn = 0;
 
 // 1. incompatible inputs
 
@@ -46,6 +51,23 @@ void previewfield() {
     }
 }
 
+void printplayerfield(char *fieldarray) {
+
+    printf("   ");     
+    for(int i=0; i<10; i++) {
+        printf("%d ", i+1);
+    }
+    printf("\n");
+
+    for(int i=0; i<10; i++) {
+        printf("%c  ", buchstaben[i]);
+        for(int j=0; j<10; j++) {
+//          printf("%c ", fieldarray[i][j]);
+        }
+        printf("\n");
+    }
+}
+
 void welcomeMessages() {
     printf("\n");
     printf("\nPress ENTER key to start.");
@@ -58,7 +80,7 @@ void welcomeMessages() {
     printf("\nKeep in mind that you, as the player have to look if the boats are placed legally.\n");
     printf("\nYou have 10 boats:\n1x with the length of 4\n2x with the length of 3\n3x with the length of 2\n4x with the length of 1\n");
     printf("\nWhen placing a boat, at first give the y coordinate, then the x coordinate.\n");
-    printf("\nLegende: \n\n   -  unknown field\n   O  boat\n   x  destroyed part of boat\n   X  part of fully destroyed boat\n   w  water");
+    printf("\nLegende: \n\n   -  unknown\n   O  boat\n   x  destroyed part of boat\n   X  part of fully destroyed boat\n   w  water");
     printf("\n\n");
     printf("The battlefield looks like that:\n\n");
     previewfield();
@@ -68,18 +90,19 @@ void welcomeMessages() {
     deleteall();
 }
 
-char boatplacing(char *array, int a) {  
-    // format: player array , player number
+//char to void
 
+char boatplacing(char *array, int playernumber) {  
+    // format: player array , player number
 
     // allocates - to the field, otherwise error
     for(int i=0; i<100; i++) {
         *(array+i) = '-';
     }
 
-    printf("Player %d:\n\n", a);
+    printf("Player %d:\n\n", playernumber);
 
-    for(int p=0; p<10; p++) { //  p = 10 boats...
+    for(int p=0; p<10; p++) { //  p = 10 boats...    
         int x = 0;
         int y = 0;
         int i, k, j;
@@ -203,20 +226,96 @@ char boatplacing(char *array, int a) {
             printf("\n");
         }
     }
-    printf("\nPlayer %d placed every boat.\n", a);
+    printf("\nPlayer %d placed every boat.\n", playernumber);
     printf("\nPress ENTER key to remove your field from the screen.");
     clean_stdin();
     deleteall();
 }
 
-void shooting() {
-    int counterp1 = 0;
-    int counterp2 = 0;
+// int bc points will be returned
+int shooting(int player, char *playerarray, char *resultarray) {
+    //int counterp1 = 0;
+    //int counterp2 = 0;
+    
+    // allocates - to the field, otherwise error
+    for(int i=0; i<100; i++) {
+        *(resultarray+i) = '?';
+    }
+
+    int sx, sy;
+    int p = 0;
+
+    printf("Player %d:\n\n", player);
+
+    p++;
+    printf("y coordinate of shot nr %d: ", p);   // what if incompatible input
+    scanf("%d", &sy);
+    clean_stdin();
+    printf("x coordinate of shot nr %d: ", p);   // what if incompatible input
+    scanf("%d", &sx);
+    clean_stdin();
+
+    sx--;
+    sy--;
+
+    if(*(playerarray+((sy*10)+sx)) == 'O') {
+        printf("boat hit!\n\n");
+        //counterp1++;
+        *(playerarray+((sy*10)+sx)) = 'x';
+        *(resultarray+((sy*10)+sx)) = 'x';
+        return 1;
+    }
+    if(*(playerarray+((sy*10)+sx)) == '-') {
+        printf("water...");
+        *(resultarray+((sy*10)+sx)) = 'w';
+        whoseturn++;
+        return 0;
+    }
+
 }
+
 
 int main() {
     welcomeMessages();
 
     boatplacing(*boatfield1, 1); // format: player array , player number
     boatplacing(*boatfield2, 2); // format: player array , player number
+
+    int counterofplayer1 = 0;
+    int counterofplayer2 = 0;
+
+    printf("Player 1 starts:");
+
+    do {
+
+        if (whoseturn%2 == 0) {
+            //                   attacker,   defender ,  attacker result
+            counterofplayer1 += shooting(1, *boatfield2, *shootingresult1);
+
+            
+        }
+        if (whoseturn%2 == 1) {
+            counterofplayer2 += shooting(2, *boatfield1, *shootingresult2);
+        }
+
+
+
+    } while(counterofplayer1 != 20 || counterofplayer2 != 20);
 }
+
+/*
+
+        printf("   ");     
+        for(int i=0; i<10; i++) {
+            printf("%d ", i+1);
+        }
+        printf("\n");
+
+        for(int i=0; i<10; i++) {
+            printf("%c  ", buchstaben[i]);
+            for(int j=0; j<10; j++) {
+                printf("%c ", boatfield1[i][j]);
+            }
+            printf("\n");
+        }
+*/
