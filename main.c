@@ -356,39 +356,54 @@ char boatplacing(char *array, int playernumber, char *resultarray) {
 
 // int bc points will be returned
 int shooting(int player, char *playerarray, char *resultarray) {
-    
+
+    int stop = 1;
     int sx, sy;
 
-    printf("Player %d:\n\n", player);
+    do {
+        
+        printf("Player %d:\n\n", player);
 
-    printf("y coordinate of shot nr %d: ", whichplayerisnow);   // what if incompatible input
-    scanf("%d", &sy);
-    clean_stdin();
-    printf("x coordinate of shot nr %d: ", whichplayerisnow);   // what if incompatible input
-    scanf("%d", &sx);
-    clean_stdin();
+        printf("y coordinate of shot nr %d: ", whichplayerisnow);   // what if incompatible input
+        scanf("%d", &sy);
+        clean_stdin();
+        printf("x coordinate of shot nr %d: ", whichplayerisnow);   // what if incompatible input
+        scanf("%d", &sx);
+        clean_stdin();
 
-    sx--;
-    sy--;
+        sx--;
+        sy--;
 
-    if(*(playerarray+((sy*10)+sx)) == 'O') {
-        printf("\nboat hit! check the fields and go on!\n\n");
-        //*(playerarray+((sy*10)+sx)) = 'x';  // printed x on the regular boat field
-        *(resultarray+((sy*10)+sx)) = 'x';
-        return 1;
-    }
-    if(*(playerarray+((sy*10)+sx)) == '-') {
-        printf("\nwater...your opponent will shoot next.\n\n");
-        *(resultarray+((sy*10)+sx)) = 'w';
-        whoseturn++;
-        return 0;
-    }
+        if(*(resultarray+((sy*10)+sx)) == '-') {
+
+            
+
+            if(*(playerarray+((sy*10)+sx)) == 'O') {
+                printf("\nboat hit! check the fields and go on!\n\n");
+                //*(playerarray+((sy*10)+sx)) = 'x';  // printed x on the regular boat field
+                *(resultarray+((sy*10)+sx)) = 'x';
+                return 1;
+            }
+            if(*(playerarray+((sy*10)+sx)) == '-') {
+                printf("\nwater...your opponent will shoot next.\n\n");
+                *(resultarray+((sy*10)+sx)) = 'w';
+                whoseturn++;
+                return 0;
+            }
+            
+            stop = 0;
+        }
+        else {
+            printf("\n\nthe field on which you tried to shoot doesnt exist or is know as water/boat.\nTry again to shoot a field where you dont know its identity.\n\n");
+        }
+
+    } while(stop);
 
 }
 
 int main() {
-    welcomeMessages();
 
+    welcomeMessages();
     boatplacing(*boatfield1, 1, *shootingresult1); // format: player array , player number, shooting result
     boatplacing(*boatfield2, 2, *shootingresult2); // format: player array , player number, shooting result
 
@@ -480,13 +495,14 @@ int main() {
 
 // destroyed boat xxxx to SSSS
 
-// check what field before shooting, allowed to shoot in fields with - 
+// 10 boat places  && 20 points to win
 
 // invalid inputs later.   (maybe)
 
-// 10 boat places  && 20 points to win
 
 
-/////// FIXED /////// 
+/////// FIXED/DONE /////// 
 
 // 1x boats NO DIRECTION 
+
+// check what field before shooting, allowed to shoot in fields with - 
