@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-
+const char boatspecifier[] = {'0','1','2','3','4','5','6','7','8','9'};
 const int boatlength[] = {4, 3, 3, 2, 2, 2, 1, 1, 1, 1};
 const char buchstaben[] = {'a','b','c','d','e','f','g','h','i','j'};
 
@@ -12,11 +12,12 @@ char boatfield1[10][10];        // [y][x]  field of player 1
 char boatfield2[10][10];        // [y][x]  field of player 2
 char shootingresult1[10][10];   //     result of p1's shootings
 char shootingresult2[10][10];   //     result of p2's shootings
+char numberedfield1[10][10];   // for function destroyedboat
+char numberedfield2[10][10];   // for function destroyedboat
 
 int whoseturn = 0;
 int whichplayerisnow = 0;
 
-// 1. incompatible inputs
 
 void deleteall() { 
     // deletes the terminal for changing user. //  # präprozessor anweisungen     
@@ -87,78 +88,9 @@ void printresultfield(char *fieldarray) {
         printf("\n");
     }
 }
+
 //                       your result,   opponent arrray
-void destroyedboat(char *resultarray, char *attckdarray) {
-    for(int i=0; i<10; i++) {
-        for(int j=0; j<10; j++) {
-//for the horizontal 4x boat                                                                                                                                                     !!!
-            if(((*(resultarray+((10*i)+j)) == 'x' && *(resultarray+((10*i)+j+1)) == 'x' && *(resultarray+((10*i)+j+2)) == 'x' && *(resultarray+((10*i)+j+3)) == 'x' && *(resultarray+((10*i)+j-1)) == '-') &&
-                (*(attckdarray+((10*i)+j)) == 'O' && *(attckdarray+((10*i)+j+1)) == 'O' && *(attckdarray+((10*i)+j+2)) == 'O' && *(attckdarray+((10*i)+j+3)) == 'O' && *(attckdarray+((10*i)+j-1)) == '-')) ||
-               ((*(resultarray+((10*i)+j)) == 'x' && *(resultarray+((10*i)+j+1)) == 'x' && *(resultarray+((10*i)+j+2)) == 'x' && *(resultarray+((10*i)+j+3)) == 'x' && *(resultarray+((10*i)+j+4)) == '-') &&
-                (*(attckdarray+((10*i)+j)) == 'O' && *(attckdarray+((10*i)+j+1)) == 'O' && *(attckdarray+((10*i)+j+2)) == 'O' && *(attckdarray+((10*i)+j+3)) == 'O' && *(attckdarray+((10*i)+j+4)) == '-'))) {
-
-                *(resultarray+((10*i)+j)) = 'S';
-                *(resultarray+((10*i)+j+1)) = 'S';
-                *(resultarray+((10*i)+j+2)) = 'S';
-                *(resultarray+((10*i)+j+3)) = 'S';
-            }
-//for the vertical 4x boat                                                                                                                                                           !!!
-            if(((*(resultarray+((10*i)+j)) == 'x' && *(resultarray+((10*(i+1))+j)) == 'x' && *(resultarray+((10*(i+2))+j)) == 'x' && *(resultarray+((10*(i+3))+j)) == 'x' && *(resultarray+((10*(i-1))+j)) == '-') &&
-                (*(attckdarray+((10*i)+j)) == 'O' && *(attckdarray+((10*(i+1))+j)) == 'O' && *(attckdarray+((10*(i+2))+j)) == 'O' && *(attckdarray+((10*(i+3))+j)) == 'O' && *(attckdarray+((10*(i-1))+j)) == '-')) ||
-               ((*(resultarray+((10*i)+j)) == 'x' && *(resultarray+((10*(i+1))+j)) == 'x' && *(resultarray+((10*(i+2))+j)) == 'x' && *(resultarray+((10*(i+3))+j)) == 'x' && *(resultarray+((10*(i+4))+j)) == '-') &&
-                (*(attckdarray+((10*i)+j)) == 'O' && *(attckdarray+((10*(i+1))+j)) == 'O' && *(attckdarray+((10*(i+2))+j)) == 'O' && *(attckdarray+((10*(i+3))+j)) == 'O' && *(attckdarray+((10*(i+4))+j)) == '-'))) {
-
-                *(resultarray+((10*i)+j)) = 'S';
-                *(resultarray+((10*(i+1))+j)) = 'S';
-                *(resultarray+((10*(i+2))+j)) = 'S';
-                *(resultarray+((10*(i+3))+j)) = 'S';
-            }
-//for the horizontal 3x boat                                                                                                               !!!
-            if(((*(resultarray+((10*i)+j)) == 'x' && *(resultarray+((10*i)+j+1)) == 'x' && *(resultarray+((10*i)+j+2)) == 'x' && *(resultarray+((10*i)+j-1)) == '-') &&
-                (*(attckdarray+((10*i)+j)) == 'O' && *(attckdarray+((10*i)+j+1)) == 'O' && *(attckdarray+((10*i)+j+2)) == 'O' && *(attckdarray+((10*i)+j-1)) == '-')) ||
-               ((*(resultarray+((10*i)+j)) == 'x' && *(resultarray+((10*i)+j+1)) == 'x' && *(resultarray+((10*i)+j+2)) == 'x' && *(resultarray+((10*i)+j+3)) == '-') &&
-                (*(attckdarray+((10*i)+j)) == 'O' && *(attckdarray+((10*i)+j+1)) == 'O' && *(attckdarray+((10*i)+j+2)) == 'O' && *(attckdarray+((10*i)+j+3)) == '-'))) {
-
-                *(resultarray+((10*i)+j)) = 'S';
-                *(resultarray+((10*i)+j+1)) = 'S';
-                *(resultarray+((10*i)+j+2)) = 'S';
-            }
-//for the vertical 3x boat                                                                                                                   !!!
-            if(((*(resultarray+((10*i)+j)) == 'x' && *(resultarray+((10*(i+1))+j)) == 'x' && *(resultarray+((10*(i+2))+j)) == 'x' && *(resultarray+((10*(i-1))+j)) == '-') &&
-                (*(attckdarray+((10*i)+j)) == 'O' && *(attckdarray+((10*(i+1))+j)) == 'O' && *(attckdarray+((10*(i+2))+j)) == 'O' && *(attckdarray+((10*(i-1))+j)) == '-')) ||
-               ((*(resultarray+((10*i)+j)) == 'x' && *(resultarray+((10*(i+1))+j)) == 'x' && *(resultarray+((10*(i+2))+j)) == 'x' && *(resultarray+((10*(i+3))+j)) == '-') &&
-                (*(attckdarray+((10*i)+j)) == 'O' && *(attckdarray+((10*(i+1))+j)) == 'O' && *(attckdarray+((10*(i+2))+j)) == 'O' && *(attckdarray+((10*(i+3))+j)) == '-'))) {
-
-                *(resultarray+((10*i)+j)) = 'S';
-                *(resultarray+((10*(i+1))+j)) = 'S';
-                *(resultarray+((10*(i+2))+j)) = 'S';
-            }
-//for the horizontal 2x boat                                                                         !!!
-            if(((*(resultarray+((10*i)+j)) == 'x' && *(resultarray+((10*i)+j+1)) == 'x' && *(resultarray+((10*i)+j-1)) == '-') &&
-                (*(attckdarray+((10*i)+j)) == 'O' && *(attckdarray+((10*i)+j+1)) == 'O' && *(attckdarray+((10*i)+j-1)) == '-')) ||
-               ((*(resultarray+((10*i)+j)) == 'x' && *(resultarray+((10*i)+j+1)) == 'x' && *(resultarray+((10*i)+j+2)) == '-') &&
-                (*(attckdarray+((10*i)+j)) == 'O' && *(attckdarray+((10*i)+j+1)) == 'O' && *(attckdarray+((10*i)+j+2)) == '-'))) {
-
-                *(resultarray+((10*i)+j)) = 'S';
-                *(resultarray+((10*i)+j+1)) = 'S';
-            }
-//for the vertical 2x boat                                                                           !!!
-            if(((*(resultarray+((10*i)+j)) == 'x' && *(resultarray+((10*(i+1))+j)) == 'x' && *(resultarray+((10*(i-1))+j)) == '-') &&
-                (*(attckdarray+((10*i)+j)) == 'O' && *(attckdarray+((10*(i+1))+j)) == 'O' && *(attckdarray+((10*(i-1))+j)) == '-')) ||
-               ((*(resultarray+((10*i)+j)) == 'x' && *(resultarray+((10*(i+1))+j)) == 'x' && *(resultarray+((10*(i+2))+j)) == '-') &&
-                (*(attckdarray+((10*i)+j)) == 'O' && *(attckdarray+((10*(i+1))+j)) == 'O' && *(attckdarray+((10*(i+2))+j)) == '-'))) {
-
-                *(resultarray+((10*i)+j)) = 'S';
-                *(resultarray+((10*(i+1))+j)) = 'S';
-            }
-            
-//for the 1x boat
-            if((*(resultarray+((10*i)+j)) == 'x' && *(resultarray+((10*i)+j+1)) == '-' && *(resultarray+((10*i)+j-1)) == '-') && (*(resultarray+((10*(i+1))+j)) == '-' && *(resultarray+((10*(i-1))+j)) == '-') &&
-               (*(attckdarray+((10*i)+j)) == 'O' && *(attckdarray+((10*i)+j+1)) == '-' && *(attckdarray+((10*i)+j-1)) == '-') && (*(attckdarray+((10*(i+1))+j)) == '-' && *(attckdarray+((10*(i-1))+j)) == '-')) {
-                *(resultarray+((10*i)+j)) = 'S';
-            }
-        }
-    }
+void destroyedboat(char *resultarray, char *attckdarray, char *numberarray) {
 
 }
 
@@ -185,7 +117,8 @@ void welcomeMessages() {
 }
 
 //char to void
-char boatplacing(char *array, int playernumber, char *resultarray) {  
+char boatplacing(char *array, int playernumber, char *resultarray, char *numberarray) {  
+    
     // format: player array , player number
 
     // allocates - to the main array, otherwise error
@@ -196,6 +129,11 @@ char boatplacing(char *array, int playernumber, char *resultarray) {
     // allocates ? to the result array, otherwise error
     for(int i=0; i<100; i++) {
         *(resultarray+i) = '-';
+    }
+
+    // allocates ? to the numbered array, otherwise error
+    for(int i=0; i<100; i++) {
+        *(numberarray+i) = '-';
     }
 
     printf("Player %d:\n\n", playernumber);
@@ -346,6 +284,56 @@ char boatplacing(char *array, int playernumber, char *resultarray) {
                 }
                 printf("\n");
         }
+
+        // specifies the boats in an all knowing field which nobody will see
+        switch(boatlength[p]) {
+            case 4:
+ 
+                for(int i=0; i<10; i++) {
+                    for(int j=0; j<10; j++) {
+                        if(*(numberarray+((i*10)+j)) == '-' && *(array+((i*10)+j)) == 'O') { // first condition checks if not already a number
+                            *(numberarray+((i*10)+j)) = boatspecifier[p];
+                        }
+                    }
+                }
+
+            break;
+            case 3:
+
+                for(int i=0; i<10; i++) {
+                    for(int j=0; j<10; j++) {
+                        if(*(numberarray+((i*10)+j)) == '-' && *(array+((i*10)+j)) == 'O') { // first condition checks if not already a number
+                            *(numberarray+((i*10)+j)) = boatspecifier[p];
+                        }
+                    }
+                }
+
+            break;
+            case 2:
+
+                for(int i=0; i<10; i++) {
+                    for(int j=0; j<10; j++) {
+                        if(*(numberarray+((i*10)+j)) == '-' && *(array+((i*10)+j)) == 'O') { // first condition checks if not already a number
+                            *(numberarray+((i*10)+j)) = boatspecifier[p];
+                        }
+                    }
+                }
+
+            break;
+            case 1:
+
+                for(int i=0; i<10; i++) {
+                    for(int j=0; j<10; j++) {
+                        if(*(numberarray+((i*10)+j)) == '-' && *(array+((i*10)+j)) == 'O') { // first condition checks if not already a number
+                            *(numberarray+((i*10)+j)) = boatspecifier[p];
+                        }
+                    }
+                }
+
+            break;
+
+        }
+    
     }
 
     printf("\nPlayer %d placed every boat.\n", playernumber);
@@ -355,7 +343,7 @@ char boatplacing(char *array, int playernumber, char *resultarray) {
 }
 
 // int bc points will be returned
-int shooting(int player, char *playerarray, char *resultarray) {
+int shooting(int player, char *playerarray, char *resultarray, char *numberarray) {
 
     int stop = 1;
     int sx, sy;
@@ -376,12 +364,15 @@ int shooting(int player, char *playerarray, char *resultarray) {
 
         if(*(resultarray+((sy*10)+sx)) == '-') {
 
-            
-
             if(*(playerarray+((sy*10)+sx)) == 'O') {
                 printf("\nboat hit! check the fields and go on!\n\n");
-                //*(playerarray+((sy*10)+sx)) = 'x';  // printed x on the regular boat field
-                *(resultarray+((sy*10)+sx)) = 'x';
+
+                if(*(numberarray+((sy*10)+sx)) == '1') {
+                    *(resultarray+((sy*10)+sx)) = 'S';
+                }
+                else{
+                    *(resultarray+((sy*10)+sx)) = 'x';
+                }
                 return 1;
             }
             if(*(playerarray+((sy*10)+sx)) == '-') {
@@ -404,8 +395,26 @@ int shooting(int player, char *playerarray, char *resultarray) {
 int main() {
 
     welcomeMessages();
-    boatplacing(*boatfield1, 1, *shootingresult1); // format: player array , player number, shooting result
-    boatplacing(*boatfield2, 2, *shootingresult2); // format: player array , player number, shooting result
+    boatplacing(*boatfield1, 1, *shootingresult1, *numberedfield1); // format: player array , player number, shooting result
+    //boatplacing(*boatfield2, 2, *shootingresult2, *numberedfield2); // format: player array , player number, shooting result
+
+
+///////////////////////////////////////////
+    printf("number field\n\n");
+    printf("   ");     
+    for(int i=0; i<10; i++) {
+        printf("%d ", i+1);
+    }
+    printf("\n");
+
+    for(int i=0; i<10; i++) {
+        printf("%c  ", buchstaben[i]);
+            for(int j=0; j<10; j++) {
+                printf("%c ", numberedfield1[i][j]); 
+            }
+        printf("\n");
+    }
+///////////////////////////////////////////
 
     int counterofplayer1 = 0;
     int counterofplayer2 = 0;
@@ -426,18 +435,18 @@ int main() {
             printresultfield(*shootingresult1);
             printf("\n");
             //        attacker,   defender ,  attacker result
-            temp1 = shooting(1, *boatfield2, *shootingresult1);
+            temp1 = shooting(1, *boatfield2, *shootingresult1, *numberedfield1);
             counterofplayer1 = counterofplayer1 + temp1;
 
             //            your result,  opponent arrray
-            //destroyedboat(*shootingresult1, *boatfield2);
+            destroyedboat(*shootingresult1, *boatfield2, *numberedfield1);
 
             printplayerfield(*boatfield1);
             printf("\nAfter shooting.\n\n");
             printresultfield(*shootingresult1);
             printf("\nYour points (1 point equals 1 boat part): %d\n", counterofplayer1);
 
-            if(counterofplayer1 >= 20) {               // !!!!!
+            if(counterofplayer1 >= 7) {               // !!!!!
                 stop = 0;
 
                 printf("\n\n");
@@ -459,18 +468,18 @@ int main() {
             printresultfield(*shootingresult2);
             printf("\n");
             //        attacker,   defender ,  attacker result
-            temp2 = shooting(2, *boatfield1, *shootingresult2);
+            temp2 = shooting(2, *boatfield1, *shootingresult2, *numberedfield2);
             counterofplayer2 = counterofplayer2 + temp2;
 
             //            your result,  opponent arrray
-            //destroyedboat(*shootingresult2, *boatfield1);
+            destroyedboat(*shootingresult2, *boatfield1, *numberedfield2);
 
             printplayerfield(*boatfield2);
             printf("\nAfter shooting.\n\n");
             printresultfield(*shootingresult2);
             printf("\nYour points (1 point equals 1 boat part): %d\n", counterofplayer2);
             
-            if(counterofplayer2 >= 20) {               // !!!!!
+            if(counterofplayer2 >= 7) {               // !!!!!
                 stop = 0;
 
                 printf("\n\n");
@@ -493,7 +502,7 @@ int main() {
 
 /////// TO DO /////// 
 
-// destroyed boat xxxx to SSSS
+// destroyed boat xxxx to SSSS, xxx to SSS, xx to SS
 
 // 10 boat places  && 20 points to win
 
@@ -502,6 +511,9 @@ int main() {
 
 
 /////// FIXED/DONE /////// 
+
+// single boat will be instantly a S
+
 
 // 1x boats NO DIRECTION 
 
