@@ -6,7 +6,7 @@
 
 const char boatspecifier[] = {'0','1','2','3','4','5','6','7','8','9'};
 const int boatlength[] = {4, 3, 3, 2, 2, 2, 1, 1, 1, 1};
-const char buchstaben[] = {'a','b','c','d','e','f','g','h','i','j'};
+const int rownumbers[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
 char boatfield1[10][10];        // [y][x]  field of player 1
 char boatfield2[10][10];        // [y][x]  field of player 2
@@ -37,15 +37,25 @@ void clean_stdin(void)
     } while (c != '\n' && c != EOF);
 }
 
-void previewfield() {
+void printcolumnnumbers() {
     printf("   ");     
     for(int i=0; i<10; i++) {
         printf("%d ", i+1);
     }
     printf("\n");
+}
+
+void previewfield() {
+
+    printcolumnnumbers();
 
     for(int i=0; i<10; i++) {
-        printf("%c  ", buchstaben[i]);
+        if(rownumbers[i] != 10) {
+            printf("%d  ", rownumbers[i]);
+        }
+        else {
+            printf("%d ", rownumbers[i]);
+        }
         for(int j=0; j<10; j++) {
             printf("- ");
         }
@@ -56,14 +66,10 @@ void previewfield() {
 void printplayerfield(char *fieldarray) {
 
     printf("Your field\n\n");
-    printf("   ");     
-    for(int i=0; i<10; i++) {
-        printf("%d ", i+1);
-    }
-    printf("\n");
+    printcolumnnumbers();
 
     for(int i=0; i<10; i++) {
-        printf("%c  ", buchstaben[i]);
+        printf("%c  ", rownumbers[i]);
             for(int j=0; j<10; j++) {
                 printf("%c ", *(fieldarray+((i*10)+j))); 
             }
@@ -74,22 +80,19 @@ void printplayerfield(char *fieldarray) {
 void printresultfield(char *fieldarray) {
 
     printf("Your shooting results\n\n");
-    printf("   ");     
-    for(int i=0; i<10; i++) {
-        printf("%d ", i+1);
-    }
-    printf("\n");
+    printcolumnnumbers();
 
     for(int i=0; i<10; i++) {
-        printf("%c  ", buchstaben[i]);
+        printf("%c  ", rownumbers[i]);
             for(int j=0; j<10; j++) {
                 printf("%c ", *(fieldarray+((i*10)+j))); 
             }
         printf("\n");
     }
 }
+
 //                       your result,   opponent arrray
-void destroyedboat(char *resultarray, char *attckdarray, char *numberarray) {
+void destroyedboat(char *resultarray, char *numberarray) {
 
     for(int i=0; i<10; i++) {
         for(int j=0; j<10; j++) {
@@ -204,13 +207,10 @@ char boatplacing(char *array, int playernumber, char *resultarray, char *numbera
         y--;
         x--;
         
-        printf("\n\n   ");     
-        for(j=0; j<10; j++) {
-            printf("%d ", j+1);
-        }
-        printf("\n");
+        printf("\n\n");
+        printcolumnnumbers();
         for(i=0; i<10; i++) {
-            printf("%c  ", buchstaben[i]);
+            printf("%c  ", rownumbers[i]);
             for(k=0; k<10; k++) {
                 if( y == i && x == k) {
                     printf("O ");
@@ -238,13 +238,11 @@ char boatplacing(char *array, int playernumber, char *resultarray, char *numbera
                     *(array+((y*10+x)-h)) = 'O'; 
                 }
 
-                printf("\n\n   ");     
+                printf("\n\n");
+                printcolumnnumbers();
+                
                 for(int i=0; i<10; i++) {
-                    printf("%d ", i+1);
-                }
-                printf("\n");
-                for(int i=0; i<10; i++) {
-                    printf("%c  ", buchstaben[i]);
+                    printf("%c  ", rownumbers[i]);
 
                     for(int j=0; j<10; j++) {
                         printf("%c ", *(array+((i*10)+j)));
@@ -257,14 +255,12 @@ char boatplacing(char *array, int playernumber, char *resultarray, char *numbera
                 for(int b=0; b<temp; b++) {
                     *(array+((y*10+x)+b)) = 'O'; 
                 }
-            
-                printf("\n\n   ");     
+
+                printf("\n\n");
+                printcolumnnumbers();
+                
                 for(int i=0; i<10; i++) {
-                    printf("%d ", i+1);
-                }
-                printf("\n");
-                for(int i=0; i<10; i++) {
-                    printf("%c  ", buchstaben[i]);
+                    printf("%c  ", rownumbers[i]);
 
                     for(int j=0; j<10; j++) {
                         printf("%c ", *(array+((i*10)+j)));
@@ -279,13 +275,11 @@ char boatplacing(char *array, int playernumber, char *resultarray, char *numbera
                     // array[y-q][x] = 'O'; 
                 }
 
-                printf("\n\n   ");     
+                printf("\n\n");
+                printcolumnnumbers();
+                
                 for(int i=0; i<10; i++) {
-                    printf("%d ", i+1);
-                }
-                printf("\n");
-                for(int i=0; i<10; i++) {
-                    printf("%c  ", buchstaben[i]);
+                    printf("%c  ", rownumbers[i]);
 
                     for(int j=0; j<10; j++) {
                         printf("%c ", *(array+((i*10)+j)));
@@ -300,13 +294,12 @@ char boatplacing(char *array, int playernumber, char *resultarray, char *numbera
                     //array[y+t][x] = 'O'; 
                 }
 
-                printf("\n\n   ");     
-                for(int i=0; i<10; i++) {
-                    printf("%d ", i+1);
-                }
+                printf("\n\n");
+                printcolumnnumbers();
+                
                 printf("\n");
                 for(int i=0; i<10; i++) {
-                    printf("%c  ", buchstaben[i]);
+                    printf("%c  ", rownumbers[i]);
 
                     for(int j=0; j<10; j++) {
                         printf("%c ", *(array+((i*10)+j)));
@@ -320,13 +313,12 @@ char boatplacing(char *array, int playernumber, char *resultarray, char *numbera
 
         *(array+(((y)*10)+x)) = 'O';
 
-            printf("\n\n   ");     
+
+                printf("\n\n");
+                printcolumnnumbers();
+                
                 for(int i=0; i<10; i++) {
-                    printf("%d ", i+1);
-                }
-                printf("\n");
-                for(int i=0; i<10; i++) {
-                    printf("%c  ", buchstaben[i]);
+                    printf("%c  ", rownumbers[i]);
 
                     for(int j=0; j<10; j++) {
                         printf("%c ", *(array+((i*10)+j)));
@@ -459,7 +451,7 @@ int main() {
     printf("\n");
 
     for(int i=0; i<10; i++) {
-        printf("%c  ", buchstaben[i]);
+        printf("%c  ", rownumbers[i]);
             for(int j=0; j<10; j++) {
                 printf("%c ", numberedfield1[i][j]); 
             }
@@ -474,7 +466,7 @@ int main() {
     printf("\n");
 
     for(int i=0; i<10; i++) {
-        printf("%c  ", buchstaben[i]);
+        printf("%c  ", rownumbers[i]);
             for(int j=0; j<10; j++) {
                 printf("%c ", numberedfield2[i][j]); 
             }
@@ -505,7 +497,7 @@ int main() {
             counterofplayer1 = counterofplayer1 + temp1;
 
             //            your result,  opponent arrray
-            destroyedboat(*shootingresult1, *boatfield2, *numberedfield2);
+            destroyedboat(*shootingresult1, *numberedfield2);
 
             printplayerfield(*boatfield1);
             printf("\nAfter shooting.\n\n");
@@ -538,7 +530,7 @@ int main() {
             counterofplayer2 = counterofplayer2 + temp2;
 
             //            your result,  opponent arrray
-            destroyedboat(*shootingresult2, *boatfield1, *numberedfield1);
+            destroyedboat(*shootingresult2, *numberedfield1);
 
             printplayerfield(*boatfield2);
             printf("\nAfter shooting.\n\n");
@@ -572,9 +564,19 @@ int main() {
 
 /////// TO DO /////// 
 
-// invalid inputs later.   (maybe)
+// boat placing !
 
-// error check for destroyedboat function, same row etc.
+// printplayerfield & printresultfield als eine fkt
+
+// z 176 bis 189 3 for schleifen
+
+// 236 und 3x noch
+
+// switch case in boatplacing ist useless
+
+// whoseturn fixen 
+
+// vlt main kürzer
 
 /////// FIXED /////// 
 
@@ -585,3 +587,13 @@ int main() {
 // 1x boats NO DIRECTION 
 
 // check what field before shooting, allowed to shoot in fields with - 
+
+// error check for destroyedboat function, same row etc.
+
+// abc am rand
+
+// printf("   ");     
+//   for(int i=0; i<10; i++) {
+//        printf("%d ", i+1);
+//   }
+// als funktion
