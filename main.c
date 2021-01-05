@@ -181,6 +181,26 @@ void boatsToNumbers(char *array, char *numberarray, int p) {
     }
 }
 
+// checks for correct inputs in boatplacing for the coordiantes and the direction and in shooting for the coordiantes
+int checkinput(int x, int g) {
+    
+    int stop = 1;
+    do 
+    {
+        
+        if(x <= g && x >= 1) 
+        {
+            stop = 0;
+            return x;
+        }
+        else 
+        {
+            printf("\nwrong input, try again: ");
+            scanf("%d", &x);
+        }
+    } while (stop);
+}
+
 // boat placing
 void boatplacing(char *array, int playernumber, char *resultarray, char *numberarray) {  
     
@@ -199,11 +219,14 @@ void boatplacing(char *array, int playernumber, char *resultarray, char *numbera
         int x = 0;
         int y = 0;
         int direction;
-        printf("y coordinate for boat no.%d with length %d: ", p+1, boatlength[p]);
+        printf("\ny coordinate for boat no.%d with length %d: ", p+1, boatlength[p]);
         scanf("%d", &y);
+        y = checkinput(y, 10);
         clean_stdin();
-        printf("x coordinate for boat no.%d with length %d: ", p+1, boatlength[p]);
+
+        printf("\nx coordinate for boat no.%d with length %d: ", p+1, boatlength[p]);
         scanf("%d", &x);
+        x = checkinput(x, 10);
         clean_stdin();
 
         y--;    // array is from 0 to 9, player gives input from 1 to 10
@@ -240,6 +263,7 @@ void boatplacing(char *array, int playernumber, char *resultarray, char *numbera
         if(boatlength[p] != 1) { // boats with a length bigger than 1 need a direction. 1x1 boats have no direction
             printf("\nThe x's show you where your boat could be placed, depending on the base coordinates.\nPlease check if there is enough space for your boat, considering the boat length.\nBoat left (1), right (2), up (3), down (4),  from the starting-point you chose?: ");
             scanf("%d", &direction);
+            direction = checkinput(direction, 4);
             clean_stdin();
             int temp = boatlength[p];
 
@@ -303,9 +327,11 @@ int shooting(int player, char *playerarray, char *resultarray, char *numberarray
 
         printf("y coordinate of shot: ");
         scanf("%d", &sy);
+        sy = checkinput(sy, 10);
         clean_stdin();
         printf("x coordinate of shot: ");
         scanf("%d", &sx);
+        sx = checkinput(sx, 10);
         clean_stdin();
 
         sx--;
