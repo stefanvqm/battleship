@@ -4,21 +4,22 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-const char boatspecifier[] = {'0','1','2','3','4','5','6','7','8','9'};
+const char boatspecifier[] = {'0','1','2','3','4','5','6','7','8','9'}; // gives every boat an unique number, used in numberedfield 1 & 2
 const int boatlength[] = {4, 3, 3, 2, 2, 2, 1, 1, 1, 1};
-const int rownumbers[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+const int rownumbers[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};   // used for the field rows
 
-char boatfield1[10][10];        // [y][x]  field of player 1
-char boatfield2[10][10];        // [y][x]  field of player 2
-char shootingresult1[10][10];   //     result of p1's shootings
-char shootingresult2[10][10];   //     result of p2's shootings
-char numberedfield1[10][10];   // for function destroyedboat
-char numberedfield2[10][10];   // for function destroyedboat
+char boatfield1[10][10];        // field of player 1, format: [y][x]  
+char boatfield2[10][10];        // field of player 2, format: [y][x] 
+char shootingresult1[10][10];   // result of p1's shootings
+char shootingresult2[10][10];   // result of p2's shootings
+char numberedfield1[10][10];    // for function destroyedboat
+char numberedfield2[10][10];    // for function destroyedboat
 
-int whoseturn = 0;
+int whoseturn = 0; // used to decide whose shooting 
 
+// deletes the terminal for changing user
 void deleteall(void) { 
-    // deletes the terminal for changing user. //  # präprozessor anweisungen     
+    //  source: https://stackoverflow.com/questions/142508/how-do-i-check-os-with-a-preprocessor-directive
     #if defined _WIN32
 	    system("CLS");
     #elif defined (__unix__)
@@ -26,6 +27,7 @@ void deleteall(void) {
     #endif
 }
 
+// cleans buffer of standard input, for preventing error
 void clean_stdin(void)
 {   // credits: "Miron", thanks for helping!
     char c;
@@ -35,6 +37,7 @@ void clean_stdin(void)
     } while (c != '\n' && c != EOF);
 }
 
+// prints the numbers for the x-axis of the battlefield
 void printcolumnnumbers(void) {
     printf("   ");     
     for(int i=0; i<10; i++) {
@@ -43,8 +46,8 @@ void printcolumnnumbers(void) {
     printf("\n");
 }
 
+// prints preview field for the start screen. used in welcome messages
 void previewfield(void) {
-
     printcolumnnumbers();
     for(int i=0; i<10; i++) {
         if(rownumbers[i] != 10) {
@@ -60,10 +63,9 @@ void previewfield(void) {
     }
 }
 
+// prints a specified field, depending what parameter is used
 void printfield(char *fieldarray) {
-
     printcolumnnumbers();
-
     for(int i=0; i<10; i++) {
         if(rownumbers[i] != 10) {
             printf("%d  ", rownumbers[i]);
@@ -80,7 +82,9 @@ void printfield(char *fieldarray) {
     printf("\n\n");
 }
 
-//                       your result,   opponent arrray
+// transforms characters of completely destroyed boats from x to S
+// boats that are just one field won't be transformed here, see: shooting function
+// format:              your results, opponents numbered arrray
 void destroyedboat(char *resultarray, char *numberarray) {
 
     for(int i=0; i<10; i++) {
@@ -138,9 +142,9 @@ void destroyedboat(char *resultarray, char *numberarray) {
     
 }
 
+// welcome screen and its messages
 void welcomeMessages(void) {
-    printf("\n");
-    printf("\nPress ENTER key to start.");
+    printf("\n\nPress ENTER key to start.");
     clean_stdin();
     deleteall();
     printf("Welcome to Battleship!\n");
@@ -150,7 +154,7 @@ void welcomeMessages(void) {
     printf("\nKeep in mind that you, as the player have to look if the boats are placed legally.\n");
     printf("\nYou have 10 boats:\n\n   1x with the length of 4\n   2x with the length of 3\n   3x with the length of 2\n   4x with the length of 1\n");
     printf("\nWhen placing a boat, at first give the y coordinate, then the x coordinate.\n");
-    printf("\nLegende: \n\n   -  unknown\n   O  boat\n   x  destroyed part of boat\n   S  part of fully destroyed boat\n   w  water");
+    printf("\nLegend:\n\n   -  unknown\n   O  boat\n   x  destroyed part of boat\n   S  part of fully destroyed boat\n   w  water");
     printf("\n\n");
     printf("The battlefield looks like that:\n\n");
     previewfield();
@@ -159,24 +163,25 @@ void welcomeMessages(void) {
     deleteall();
 }
 
+// allocates '-' to the specified array, otherwise error
 void arrayallocating(char *array) {
-    // allocates - to the array, otherwise error
     for(int i=0; i<100; i++) {
         *(array+i) = '-';
     }
 }
 
+// delares in the numbered array for every boat a unique number
 void boatsToNumbers(char *array, char *numberarray, int p) {
-
     for(int i=0; i<10; i++) {
             for(int j=0; j<10; j++) {
-                if(*(numberarray+((i*10)+j)) == '-' && *(array+((i*10)+j)) == 'O') {    // first condition checks if not already a number
+                if(*(numberarray+((i*10)+j)) == '-' && *(array+((i*10)+j)) == 'O') {    // first condition checks if not already a number, means already a boat
                     *(numberarray+((i*10)+j)) = boatspecifier[p];
                 }
             }
     }
 }
 
+// boat placing
 void boatplacing(char *array, int playernumber, char *resultarray, char *numberarray) {  
     
     // allocates - to the main array, otherwise error
@@ -190,23 +195,24 @@ void boatplacing(char *array, int playernumber, char *resultarray, char *numbera
 
     printf("Player %d:\n\n", playernumber);
 
-    for(int p=0; p<10; p++) { //  p = 10 boats...    // !!!!!
+    for(int p=0; p<10; p++) { //  p = 10 because there are 10 boats to be placed
         int x = 0;
         int y = 0;
         int direction;
-        printf("y coordinate for boat no.%d with length %d: ", p+1, boatlength[p]);   // what if incompatible input
+        printf("y coordinate for boat no.%d with length %d: ", p+1, boatlength[p]);
         scanf("%d", &y);
         clean_stdin();
-        printf("x coordinate for boat no.%d with length %d: ", p+1, boatlength[p]);   // what if incompatible input
+        printf("x coordinate for boat no.%d with length %d: ", p+1, boatlength[p]);
         scanf("%d", &x);
         clean_stdin();
 
-        y--;
-        x--;
+        y--;    // array is from 0 to 9, player gives input from 1 to 10
+        x--;    // array is from 0 to 9, player gives input from 1 to 10
         
         printf("\n\n");
         printcolumnnumbers();
 
+        // prints a temporary field, it wont be saved here because the x's shouldn't be in the field
         for(int i=0; i<10; i++) {
             if(rownumbers[i] != 10) {
                 printf("%d  ", rownumbers[i]);
@@ -219,6 +225,7 @@ void boatplacing(char *array, int playernumber, char *resultarray, char *numbera
                     printf("O ");
                 }
                 else {
+                    // possible directions for placing the boat
                     if(((y == i) && ((k-x) < boatlength[p]) && ((x-k) < boatlength[p])) || ((x == k) && ((i-y) < boatlength[p]) && ((y-i) < boatlength[p])) ) {
                         printf("x ");
                     } 
@@ -230,13 +237,13 @@ void boatplacing(char *array, int playernumber, char *resultarray, char *numbera
             printf("\n");
         }
         
-        if(boatlength[p] != 1) {
+        if(boatlength[p] != 1) { // boats with a length bigger than 1 need a direction. 1x1 boats have no direction
             printf("\nThe x's show you where your boat could be placed, depending on the base coordinates.\nPlease check if there is enough space for your boat, considering the boat length.\nBoat left (1), right (2), up (3), down (4),  from the starting-point you chose?: ");
-            scanf("%d", &direction);  // will be used later
+            scanf("%d", &direction);
             clean_stdin();
             int temp = boatlength[p];
 
-            if(direction+48 == '1') {           // left
+            if(direction+48 == '1') {           // if player decides left
                 for(int h=0; h<temp; h++) {
                     *(array+((y*10+x)-h)) = 'O'; 
                 }
@@ -244,7 +251,7 @@ void boatplacing(char *array, int playernumber, char *resultarray, char *numbera
                 printf("\n\n");
                 printfield(array);
             }
-            if(direction+48 == '2') {           // right
+            if(direction+48 == '2') {           // if player decides right
                 for(int b=0; b<temp; b++) {
                     *(array+((y*10+x)+b)) = 'O'; 
                 }
@@ -252,7 +259,7 @@ void boatplacing(char *array, int playernumber, char *resultarray, char *numbera
                 printf("\n\n");
                 printfield(array);
             }
-            if(direction+48 == '3') {           // up
+            if(direction+48 == '3') {           // if player decides up
                 for(int q=0; q<temp; q++) {
                     *(array+((y-q)*10+x)) = 'O'; 
                 }
@@ -260,7 +267,7 @@ void boatplacing(char *array, int playernumber, char *resultarray, char *numbera
                 printf("\n\n");
                 printfield(array);
             }
-            if(direction+48 == '4') {           // down
+            if(direction+48 == '4') {           // if player decides down
                 for(int t=0; t<temp; t++) {
                     *(array+((y+t)*10+x)) = 'O';
                 }
@@ -271,15 +278,14 @@ void boatplacing(char *array, int playernumber, char *resultarray, char *numbera
         } 
         else {
 
-            *(array+(((y)*10)+x)) = 'O';
+            *(array+(((y)*10)+x)) = 'O';        // for boats with length 1
             printf("\n\n");
             printfield(array);
 
         }
 
-        // specifies the boats in an all knowing field which nobody will see
+        // specifies the boats in an all knowing field (numberedfield) which nobody will see
         boatsToNumbers(array, numberarray, p);
-
     }
 
     printf("\nPlayer %d placed every boat.\n", playernumber);
@@ -288,70 +294,61 @@ void boatplacing(char *array, int playernumber, char *resultarray, char *numbera
     deleteall();
 }
 
-// int bc points will be returned
+// int because points will be returned for score
 int shooting(int player, char *playerarray, char *resultarray, char *numberarray) {
 
-    int stop = 1;
     int sx, sy;
 
-    do {
-        
         printf("Player %d:\n\n", player);
 
-        printf("y coordinate of shot: ");   // what if incompatible input
+        printf("y coordinate of shot: ");
         scanf("%d", &sy);
         clean_stdin();
-        printf("x coordinate of shot: ");   // what if incompatible input
+        printf("x coordinate of shot: ");
         scanf("%d", &sx);
         clean_stdin();
 
         sx--;
         sy--;
 
-        if(*(resultarray+((sy*10)+sx)) == '-') {
+        if(*(resultarray+((sy*10)+sx)) == '-') { // checks if field can be attacked or is already known
 
             if(*(playerarray+((sy*10)+sx)) == 'O') {
                 printf("\nboat hit! check the fields and go on!\n\n");
-
+                // boats with the length of 1 have in the numbered field the specified numbers 6, 7, 8 and 9. a boat with length 1 will be instantly marked as a S
                 if(*(numberarray+((sy*10)+sx)) == '6' || *(numberarray+((sy*10)+sx)) == '7' || *(numberarray+((sy*10)+sx)) == '8' || *(numberarray+((sy*10)+sx)) == '9') {
                     *(resultarray+((sy*10)+sx)) = 'S';
                 }
                 else{
                     *(resultarray+((sy*10)+sx)) = 'x';
                 }
-                return 1;
+                return 1; // returns 1 point because shot hit boat
             }
             if(*(playerarray+((sy*10)+sx)) == '-') {
                 printf("\nwater...your opponent will shoot next.\n\n");
                 *(resultarray+((sy*10)+sx)) = 'w';
-                whoseturn++;
-                return 0;
+                whoseturn++; // adds 1 to whoseturn, this makes the switch to the other player.
+                return 0; // returns 0 point because shot hit water
             }
-            
-            stop = 0;
         }
         else {
             printf("\n\nthe field on which you tried to shoot doesnt exist or is know as water/boat.\nTry again to shoot a field where you dont know its identity.\n\n");
         }
-
-    } while(stop);
-
 }
 
 int main(void) {
 
     welcomeMessages();
-    boatplacing(*boatfield1, 1, *shootingresult1, *numberedfield1); // format: player array , player number, shooting result
-    boatplacing(*boatfield2, 2, *shootingresult2, *numberedfield2); // format: player array , player number, shooting result
+    boatplacing(*boatfield1, 1, *shootingresult1, *numberedfield1); // format: player array , player number, shooting result, numbered field
+    boatplacing(*boatfield2, 2, *shootingresult2, *numberedfield2); // format: player array , player number, shooting result, numbered field
 
+    int counterofplayer1 = 0; // points to decide who won
+    int counterofplayer2 = 0; // points to decide who won
 
-    int counterofplayer1 = 0;
-    int counterofplayer2 = 0;
+    int temp1; // temporary to mangage the points given from the shooting function to counterofplayer1
+    int temp2; // temporary to mangage the points given from the shooting function to counterofplayer2
 
-    int temp1;
-    int temp2;
-
-    int stop = 1;
+    int stop = 1; // used to make the do-while loop infinite until one player wins and turns it to 0
 
     printf("Player 1 starts attacking!\n\n");
     printf("\nPress ENTER key to continue.");
@@ -360,6 +357,7 @@ int main(void) {
 
     do {
         if (whoseturn%2 == 0) {
+
             printf("before shooting:\n\n");
 
             printf("Your shooting results\n\n");
@@ -370,7 +368,7 @@ int main(void) {
             temp1 = shooting(1, *boatfield2, *shootingresult1, *numberedfield2);
             counterofplayer1 = counterofplayer1 + temp1;
 
-            //            your result,  opponent arrray
+            //                 your result,  opponents numbered arrray
             destroyedboat(*shootingresult1, *numberedfield2);
 
             printf("Your field\n\n");
@@ -383,8 +381,8 @@ int main(void) {
 
             printf("\nYour points (1 point equals 1 boat part): %d/20\n", counterofplayer1);
 
-            if(counterofplayer1 >= 20) {               // !!!!!
-                stop = 0;
+            if(counterofplayer1 >= 20) { // 20 points because the boats have in total 20 parts to hit
+                stop = 0; // stops the loop
 
                 printf("\n\n");
                 for(int i=0; i<3; i++) {
@@ -411,7 +409,7 @@ int main(void) {
             temp2 = shooting(2, *boatfield1, *shootingresult2, *numberedfield1);
             counterofplayer2 = counterofplayer2 + temp2;
 
-            //            your result,  opponent arrray
+            //                 your result,  opponents numbered arrray
             destroyedboat(*shootingresult2, *numberedfield1);
 
             printf("Your field\n\n");
@@ -424,7 +422,7 @@ int main(void) {
 
             printf("\nYour points (1 point equals 1 boat part): %d/20\n", counterofplayer2);
             
-            if(counterofplayer2 >= 20) {               // !!!!!
+            if(counterofplayer2 >= 20) { // 20 points because the boats have in total 20 parts to hit
                 stop = 0;
 
                 printf("\n\n");
@@ -448,11 +446,11 @@ int main(void) {
 
 // 10 boat places  && 20 points to win
 
-// void as function parameter.
 
 /////// TO DO /////// 
 
 // boat placing !HARD!
+
 
 /////// FIXED /////// 
 
